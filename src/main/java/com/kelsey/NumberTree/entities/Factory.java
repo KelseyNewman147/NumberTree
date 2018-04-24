@@ -1,6 +1,7 @@
 package com.kelsey.NumberTree.entities;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,10 @@ public class Factory {
     @Column(nullable = false, unique = true)
     String name;
 
-    @Column
+    @ManyToOne
+    RootNode rootNode;
+
+    @OneToMany(mappedBy = "factory")
     List<ChildNode> childNodes;
 
     public Factory() {

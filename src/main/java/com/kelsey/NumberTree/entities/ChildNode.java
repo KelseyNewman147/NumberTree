@@ -1,9 +1,6 @@
 package com.kelsey.NumberTree.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "child_nodes")
@@ -12,7 +9,11 @@ public class ChildNode {
     @GeneratedValue
     int id;
 
+    @Column
     int number;
+
+    @ManyToOne
+    Factory factory;
 
     public ChildNode() {
     }

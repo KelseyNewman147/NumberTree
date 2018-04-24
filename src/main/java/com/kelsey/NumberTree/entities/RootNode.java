@@ -1,13 +1,18 @@
 package com.kelsey.NumberTree.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-//@Table(name = "root_node")
+@Table(name = "root_node")
 public class RootNode {
+    @Id
+    @GeneratedValue
     int id;
+
+    @OneToMany(mappedBy = "rootNode")
     List<Factory> factories;
 
     public RootNode() {
