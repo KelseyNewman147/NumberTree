@@ -15,8 +15,8 @@ import javax.swing.*;
 
 @Controller
 public class NumberTreeController {
-    @Autowired
-    RootNode rootNode;
+//    @Autowired
+//    RootNode rootNode;
     @Autowired
     FactoryRepository factories;
 
