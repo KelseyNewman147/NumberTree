@@ -1,7 +1,6 @@
 package com.kelsey.NumberTree.controllers;
 
-import com.kelsey.NumberTree.entities.JTree;
-import com.kelsey.NumberTree.entities.RootNode;
+import com.kelsey.NumberTree.entities.NumberTree;
 import com.kelsey.NumberTree.services.ChildNodeRepository;
 import com.kelsey.NumberTree.services.FactoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpSession;
 import javax.swing.*;
+
+import static com.kelsey.NumberTree.NumberTreeApplication.frame;
 
 @Controller
 public class NumberTreeController {
@@ -37,11 +37,11 @@ public class NumberTreeController {
         //}
 
         //Create and set up the window.
-        JFrame frame = new JFrame("TreeDemo");
+        JFrame frame = frame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Add content to the window.
-        frame.add(new JTree());
+        frame.add(new NumberTree());
 
         //Display the window.
         frame.pack();
