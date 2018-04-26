@@ -23,10 +23,8 @@ public class Factory {
     public Factory() {
     }
 
-    public Factory(int id, String name, List<ChildNode> childNodes) {
-        this.id = id;
+    public Factory(String name) {
         this.name = name;
-        this.childNodes = childNodes;
     }
 
     public int getId() {

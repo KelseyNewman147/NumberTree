@@ -1,6 +1,8 @@
 package com.kelsey.NumberTree.controllers;
 
-import com.kelsey.NumberTree.entities.NumberTree;
+import com.kelsey.NumberTree.entities.ChildNode;
+import com.kelsey.NumberTree.entities.Factory;
+import com.kelsey.NumberTree.entities.RootNode;
 import com.kelsey.NumberTree.services.ChildNodeRepository;
 import com.kelsey.NumberTree.services.FactoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,45 +10,44 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.*;
 
-import static com.kelsey.NumberTree.NumberTreeApplication.frame;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-@Controller
+@RestController
 public class NumberTreeController {
-//    @Autowired
-//    RootNode rootNode;
+
     @Autowired
     FactoryRepository factories;
 
     @Autowired
     ChildNodeRepository childNodes;
 
+    @PostConstruct
+    public void init() {
+
+        if (factories.count() == 0) {
+            Factory factory = new Factory("Tommy");
+            factories.save(factory);
+            ChildNode child = new ChildNode( 42, factory);
+            childNodes.save(child);
+        }
+    }
+
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String tree(Model model) {
-//        RootNode rootNode =
-//        model.addAttribute()
-        //if (useSystemLookAndFeel) {
-            try {
-                UIManager.setLookAndFeel(
-                        UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                System.err.println("Couldn't use system look and feel.");
-            }
-        //}
+    public HashMap<Factory, List<ChildNode>> tree() {
+        RootNode rootNode = new RootNode();
+        List<Factory> factoriesList = new ArrayList<>();
+        Iterable<Factory> factoriesIt = factories.findAll();
+        factoriesIt.forEach(f -> factoriesList.add(f));
+        rootNode.setFactories(factoriesList);
+        HashMap<Factory, List<ChildNode>> tree = new HashMap<>();
+        rootNode.getFactories().forEach(f -> tree.put(f, f.getChildNodes()));
 
-        //Create and set up the window.
-        JFrame frame = frame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Add content to the window.
-        frame.add(new NumberTree());
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-
-        return "tree";
+        return tree;
     }
 }

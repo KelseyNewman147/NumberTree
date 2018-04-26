@@ -7,6 +7,7 @@ import javax.persistence.*;
 public class ChildNode {
     @Id
     @GeneratedValue
+    @Column(name = "child_id")
     int id;
 
     @Column
@@ -18,9 +19,9 @@ public class ChildNode {
     public ChildNode() {
     }
 
-    public ChildNode(int id, int number) {
-        this.id = id;
+    public ChildNode( int number, Factory factory) {
         this.number = number;
+        this.factory = factory;
     }
 
     public int getId() {
