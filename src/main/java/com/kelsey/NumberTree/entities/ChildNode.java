@@ -39,4 +39,12 @@ public class ChildNode {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public Factory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(Factory factory) {
+        this.factory = factory;
+    }
 }

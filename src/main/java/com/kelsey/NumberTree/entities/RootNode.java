@@ -9,7 +9,6 @@ import java.util.List;
 @Table(name = "root_node")
 public class RootNode {
     @Id
-    @GeneratedValue
     int id;
 
     @OneToMany(mappedBy = "rootNode")
@@ -18,9 +17,8 @@ public class RootNode {
     public RootNode() {
     }
 
-    public RootNode(int id, List<Factory> factories) {
+    public RootNode(int id) {
         this.id = id;
-        this.factories = factories;
     }
 
     public int getId() {

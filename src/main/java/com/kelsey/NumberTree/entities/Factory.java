@@ -14,6 +14,12 @@ public class Factory {
     @Column(nullable = false, unique = true)
     String name;
 
+    @Column
+    int rangleLow;
+
+    @Column
+    int rangeHigh;
+
     @ManyToOne
     RootNode rootNode;
 
@@ -23,8 +29,11 @@ public class Factory {
     public Factory() {
     }
 
-    public Factory(String name) {
+    public Factory(RootNode rootNode, String name, int rangleLow, int rangeHigh) {
+        this.rootNode = rootNode;
         this.name = name;
+        this.rangleLow = rangleLow;
+        this.rangeHigh = rangeHigh;
     }
 
     public int getId() {
@@ -49,5 +58,21 @@ public class Factory {
 
     public void setChildNodes(List<ChildNode> childNodes) {
         this.childNodes = childNodes;
+    }
+
+    public int getRangleLow() {
+        return rangleLow;
+    }
+
+    public void setRangleLow(int rangleLow) {
+        this.rangleLow = rangleLow;
+    }
+
+    public int getRangeHigh() {
+        return rangeHigh;
+    }
+
+    public void setRangeHigh(int rangeHigh) {
+        this.rangeHigh = rangeHigh;
     }
 }

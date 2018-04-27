@@ -5,21 +5,23 @@ import com.kelsey.NumberTree.entities.Factory;
 import com.kelsey.NumberTree.entities.RootNode;
 import com.kelsey.NumberTree.services.ChildNodeRepository;
 import com.kelsey.NumberTree.services.FactoryRepository;
+import com.kelsey.NumberTree.services.RootNodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 public class NumberTreeController {
+    @Autowired
+    RootNodeRepository rootNodeRepo;
 
     @Autowired
     FactoryRepository factories;
@@ -27,27 +29,71 @@ public class NumberTreeController {
     @Autowired
     ChildNodeRepository childNodes;
 
+    //create initial factory and child if null
     @PostConstruct
     public void init() {
-
-        if (factories.count() == 0) {
-            Factory factory = new Factory("Tommy");
+        if (rootNodeRepo.count() == 0) {
+            RootNode rootNode = new RootNode(1);
+            rootNodeRepo.save(rootNode);
+            Factory factory = new Factory(rootNode, "Tommy", 15, 55);
+            List<Factory> rootFactories = new ArrayList<>();
+            rootFactories.add(factory);
+            rootNode.setFactories(rootFactories);
             factories.save(factory);
-            ChildNode child = new ChildNode( 42, factory);
-            childNodes.save(child);
+
         }
     }
 
+    //retrieve all existing factories and their children
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public HashMap<Factory, List<ChildNode>> tree() {
-        RootNode rootNode = new RootNode();
-        List<Factory> factoriesList = new ArrayList<>();
-        Iterable<Factory> factoriesIt = factories.findAll();
-        factoriesIt.forEach(f -> factoriesList.add(f));
-        rootNode.setFactories(factoriesList);
-        HashMap<Factory, List<ChildNode>> tree = new HashMap<>();
-        rootNode.getFactories().forEach(f -> tree.put(f, f.getChildNodes()));
-
-        return tree;
+    public List<Factory> tree() {
+          RootNode rootNode = rootNodeRepo.findById(1);
+          List<Factory> rootFactories = rootNode.getFactories();
+        return rootFactories;
     }
+
+    //add new factory
+    @RequestMapping(path = "/factory", method = RequestMethod.POST)
+    public void createFactory(String name, int rangeLow, int rangeHigh) {
+        Factory factory = new Factory();
+        factory.setName(name);
+        factory.setRangleLow(rangeLow);
+        factory.setRangeHigh(rangeHigh);
+        factories.save(factory);
+    }
+    //create new generation of children through user input
+    @RequestMapping(path = "/child", method = RequestMethod.POST)
+    public void createChildren(int factoryId, int numberOfChildren, int rangeLow, int rangeHigh) {
+        //"Factory" needs to be filled by factory selected by user
+        Factory factory = factories.findFactoryById(factoryId);
+        if (factory.getChildNodes() != null) {
+            List<ChildNode> currentChildren = factory.getChildNodes();
+            currentChildren.forEach(c -> childNodes.delete(c));
+        }
+        for (int i = 0; i < numberOfChildren; i ++) {
+            Random r = new Random();
+            ChildNode childNode = new ChildNode();
+            childNode.setNumber(r.nextInt(rangeHigh - rangeLow) + rangeLow);
+            childNode.setFactory(factory);
+            childNodes.save(childNode);
+            List<ChildNode> factoryChildren = factory.getChildNodes();
+            factoryChildren.add(childNode);
+            factory.setChildNodes(factoryChildren);
+            factories.save(factory);//duplicates factories?
+        }
+    }
+
+    //remove factory and its children
+    @RequestMapping(path = "/factory/{id}", method = RequestMethod.DELETE)
+    public void deleteFactory(@PathVariable("id") int factoryId) {
+        Factory factory = factories.findFactoryById(factoryId);
+        factory.getChildNodes().forEach(c -> childNodes.delete(c));
+        factories.delete(factory);
+    }
+
+    //ToDO: adjust name of factory
+
+    //ToDo: adjust range
+
+
 }
