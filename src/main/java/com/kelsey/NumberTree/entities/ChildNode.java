@@ -1,5 +1,7 @@
 package com.kelsey.NumberTree.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class ChildNode {
     int number;
 
     @ManyToOne
+    @JsonBackReference
     Factory factory;
 
     public ChildNode() {

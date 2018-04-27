@@ -1,5 +1,7 @@
 package com.kelsey.NumberTree.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.persistence.criteria.Root;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Factory {
     RootNode rootNode;
 
     @OneToMany(mappedBy = "factory")
+    @JsonManagedReference
     List<ChildNode> childNodes;
 
     public Factory() {

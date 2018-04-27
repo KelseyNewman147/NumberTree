@@ -66,6 +66,7 @@ public class NumberTreeController {
     public void createChildren(int factoryId, int numberOfChildren, int rangeLow, int rangeHigh) {
         //"Factory" needs to be filled by factory selected by user
         Factory factory = factories.findFactoryById(factoryId);
+
         if (factory.getChildNodes() != null) {
             List<ChildNode> currentChildren = factory.getChildNodes();
             currentChildren.forEach(c -> childNodes.delete(c));
@@ -76,10 +77,6 @@ public class NumberTreeController {
             childNode.setNumber(r.nextInt(rangeHigh - rangeLow) + rangeLow);
             childNode.setFactory(factory);
             childNodes.save(childNode);
-            List<ChildNode> factoryChildren = factory.getChildNodes();
-            factoryChildren.add(childNode);
-            factory.setChildNodes(factoryChildren);
-            factories.save(factory);//duplicates factories?
         }
     }
 
@@ -92,8 +89,9 @@ public class NumberTreeController {
     }
 
     //ToDO: adjust name of factory
-
+    //factory.setName(name)
     //ToDo: adjust range
-
+//    factory.setRangeHigh(rangeHigh);
+//    factory.setRangleLow(rangeLow);
 
 }
