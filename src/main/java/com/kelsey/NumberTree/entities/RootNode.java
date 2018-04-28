@@ -1,5 +1,6 @@
 package com.kelsey.NumberTree.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class RootNode {
     int id;
 
     @OneToMany(mappedBy = "rootNode")
+    @JsonManagedReference
     List<Factory> factories;
 
     public RootNode() {

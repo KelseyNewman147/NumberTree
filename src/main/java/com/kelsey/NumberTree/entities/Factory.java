@@ -1,5 +1,6 @@
 package com.kelsey.NumberTree.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class Factory {
     int rangeHigh;
 
     @ManyToOne
+    @JsonBackReference
     RootNode rootNode;
 
     @OneToMany(mappedBy = "factory")
@@ -37,6 +39,14 @@ public class Factory {
         this.name = name;
         this.rangleLow = rangleLow;
         this.rangeHigh = rangeHigh;
+    }
+
+    public RootNode getRootNode() {
+        return rootNode;
+    }
+
+    public void setRootNode(RootNode rootNode) {
+        this.rootNode = rootNode;
     }
 
     public int getId() {
