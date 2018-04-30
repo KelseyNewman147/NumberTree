@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Entity
@@ -18,7 +17,7 @@ public class Factory {
     String name;
 
     @Column
-    int rangleLow;
+    int rangeLow;
 
     @Column
     int rangeHigh;
@@ -34,10 +33,10 @@ public class Factory {
     public Factory() {
     }
 
-    public Factory(RootNode rootNode, String name, int rangleLow, int rangeHigh) {
+    public Factory(RootNode rootNode, String name, int rangeLow, int rangeHigh) {
         this.rootNode = rootNode;
         this.name = name;
-        this.rangleLow = rangleLow;
+        this.rangeLow = rangeLow;
         this.rangeHigh = rangeHigh;
     }
 
@@ -73,12 +72,12 @@ public class Factory {
         this.childNodes = childNodes;
     }
 
-    public int getRangleLow() {
-        return rangleLow;
+    public int getRangeLow() {
+        return rangeLow;
     }
 
-    public void setRangleLow(int rangleLow) {
-        this.rangleLow = rangleLow;
+    public void setRangeLow(int rangeLow) {
+        this.rangeLow = rangeLow;
     }
 
     public int getRangeHigh() {

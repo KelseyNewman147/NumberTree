@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -26,28 +24,11 @@ public class NumberTreeController {
     @Autowired
     ChildNodeRepository childNodes;
 
-    //create initial factory and child if null
-    @PostConstruct
-    public void init() {
-        if (rootNodeRepo.count() == 0) {
-            RootNode rootNode = new RootNode(1);
-            rootNodeRepo.save(rootNode);
-            //ToDo: remove once root node can be viewed in UI
-            Factory factory = new Factory(rootNode, "Tommy", 15, 55);
-            List<Factory> rootFactories = new ArrayList<>();
-            rootFactories.add(factory);
-            rootNode.setFactories(rootFactories);
-            factories.save(factory);
-
-        }
-    }
-
-    //retrieve all existing factories and their children
-    @RequestMapping(path = "/", method = RequestMethod.GET)
-    public List<Factory> tree() {
-          RootNode rootNode = rootNodeRepo.findById(1);
-          List<Factory> rootFactories = rootNode.getFactories();
-        return rootFactories;
+    //retrieve all existing factories and their children from root node
+    @RequestMapping(path = "/api", method = RequestMethod.GET)
+    public RootNode tree() {
+        RootNode rootNode = rootNodeRepo.findById(1);
+        return rootNode;
     }
 
     //add new factory
@@ -60,7 +41,7 @@ public class NumberTreeController {
                 //&& (name != null && !name.isEmpty())//ToDo: validate that inputs are not null in frontend
         ) {
             factory.setName(name);
-            factory.setRangleLow(rangeLow);
+            factory.setRangeLow(rangeLow);
             factory.setRangeHigh(rangeHigh);
             factories.save(factory);
         } else if (rangeHigh < rangeLow){
@@ -76,7 +57,7 @@ public class NumberTreeController {
         //"FactoryId" needs to be filled by factory selected by user
         Factory factory = factories.findFactoryById(factoryId);
         int rangeHigh = factory.getRangeHigh();
-        int rangeLow = factory.getRangleLow();
+        int rangeLow = factory.getRangeLow();
         if (numberOfChildren <= 15) {
             if (factory.getChildNodes() != null) {
                 List<ChildNode> currentChildren = factory.getChildNodes();
@@ -124,7 +105,7 @@ public class NumberTreeController {
         if (newRangeHigh > newRangeLow) {
             Factory factory = factories.findFactoryById(factoryId);
             factory.setRangeHigh(newRangeHigh);
-            factory.setRangleLow(newRangeLow);
+            factory.setRangeLow(newRangeLow);
             factories.save(factory);
         } else {
             throw new java.lang.RuntimeException("Upper bound should be higher than the lower bound.");

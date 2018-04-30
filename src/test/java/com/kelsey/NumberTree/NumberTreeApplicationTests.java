@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -42,7 +41,7 @@ public class NumberTreeApplicationTests {
 	public void addFactory() throws Exception{
 		Factory factory = new Factory();
 		factory.setName("Hunter");
-		factory.setRangleLow(12);
+		factory.setRangeLow(12);
 		factory.setRangeHigh(42);
 	}
 
