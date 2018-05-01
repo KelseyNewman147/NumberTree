@@ -45,16 +45,23 @@ class FactoryList extends React.Component {
 
 class Factory extends React.Component {
     render() {
+    var childNodes = this.props.factory.childNodes.map(childNode =>
+            <p key={childNode.id} childnode={childNode}>{childNode.number}</p>
+            );
         return(
             <ul>
                 <li>{this.props.factory.name}</li>
                 <li>{this.props.factory.rangeLow}</li>
                 <li>{this.props.factory.rangeHigh}</li>
-                <li>{this.props.factory.childNode}</li>
+                <ul>
+                    <li>{childNodes}</li>
+                </ul>
             </ul>
         )
     }
 }
+
+
 
 ReactDOM.render(
     <App />,
