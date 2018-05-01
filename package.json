@@ -9,8 +9,15 @@
       "env"
     ]
   },
+  "watch": {
+    "test": "{src,test}/*.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "react-scripts test --env=jsdom",
+    "watch:js": "onchange 'src/*.js' -- npm run build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
   },
   "repository": {
     "type": "git",
@@ -23,7 +30,10 @@
   },
   "homepage": "https://github.com/KelseyNewman147/NumberTree#readme",
   "dependencies": {
-    "react-dom": "^16.3.2"
+    "npm-watch": "^0.3.0",
+    "onchange": "^3.3.0",
+    "react-dom": "^16.3.2",
+    "react-scripts": "^1.1.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -31,9 +41,10 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
+    "jquery": "^3.3.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.15"
+    "webpack-dev-server": "^3.1.3"
   }
 }

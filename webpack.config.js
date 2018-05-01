@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './src/main/js/app.js',
+    entry: './src/main/js/index.js',
     cache: true,
     output: {
         path: __dirname,
