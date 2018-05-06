@@ -2,9 +2,11 @@ package com.kelsey.NumberTree.controllers;
 
 import com.kelsey.NumberTree.entities.Factory;
 import com.kelsey.NumberTree.entities.RootNode;
+import com.kelsey.NumberTree.services.CorsFilter;
 import com.kelsey.NumberTree.services.FactoryRepository;
 import com.kelsey.NumberTree.services.RootNodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,13 @@ public class UserViewController {
 
     @Autowired
     FactoryRepository factories;
+
+    @Bean
+    CorsFilter corsFilter() {
+        CorsFilter filter = new CorsFilter();
+        return filter;
+    }
+
 
     @PostConstruct
     public void init() {

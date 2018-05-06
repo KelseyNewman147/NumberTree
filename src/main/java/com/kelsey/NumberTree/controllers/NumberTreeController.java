@@ -32,7 +32,7 @@ public class NumberTreeController {
     }
 
     //add new factory
-    @RequestMapping(path = "/create-factory", method = RequestMethod.POST)
+    @RequestMapping(path = "/api/create-factory", method = RequestMethod.POST)
     public void createFactory(String name, int rangeLow, int rangeHigh) {//ToDo: change to (@RequestBody Factory factory)?
         RootNode rootNode = rootNodeRepo.findById(1);
         Factory factory = new Factory();
@@ -52,8 +52,8 @@ public class NumberTreeController {
     }
 
     //create new generation of children through user input
-    @RequestMapping(path = "/create-children/{factoryId}", method = RequestMethod.POST)
-    public void createChildren(@PathVariable("factoryId")int factoryId, int numberOfChildren) {
+    @RequestMapping(path = "/api/create-children", method = RequestMethod.POST)
+    public void createChildren(int factoryId, int numberOfChildren) {
         //"FactoryId" needs to be filled by factory selected by user
         Factory factory = factories.findFactoryById(factoryId);
         int rangeHigh = factory.getRangeHigh();
@@ -77,7 +77,7 @@ public class NumberTreeController {
     }
 
     //remove factory and its children
-    @RequestMapping(path = "/delete-factory/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/api/delete-factory/{id}", method = RequestMethod.DELETE)
     public void deleteFactory(@PathVariable("id") int factoryId) {
         Factory factory = factories.findFactoryById(factoryId);
         factory.getChildNodes().forEach(c -> childNodes.delete(c));
@@ -85,7 +85,7 @@ public class NumberTreeController {
     }
 
     //rename factory
-    @RequestMapping(path = "/rename-factory/{id}", method = RequestMethod.POST)
+    @RequestMapping(path = "/api/rename-factory/{id}", method = RequestMethod.POST)
     public void renameFactory(@PathVariable("id") int factoryId, String newName) {
         Factory factory = factories.findFactoryById(factoryId);
         if (// newName != null && //ToDo: validate that inputs are not null in frontend
@@ -100,7 +100,7 @@ public class NumberTreeController {
 
 
     //adjust factory's range
-    @RequestMapping(path = "adjust-range/{id}", method = RequestMethod.POST)
+    @RequestMapping(path = "/api/adjust-range/{id}", method = RequestMethod.POST)
     public void adjustRange(@PathVariable("id") int factoryId, int newRangeHigh, int newRangeLow) {
         if (newRangeHigh > newRangeLow) {
             Factory factory = factories.findFactoryById(factoryId);
