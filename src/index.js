@@ -27,7 +27,7 @@ class App extends React.Component{
     loadTreeFromServer() {
         var self = this;
         $.ajax({
-          url: "numbertreereact.herokuapp.com/api"
+          url: "/api"
         }).then(function (data) {
           console.log(data);
           self.setState({factories: data.factories});
