@@ -23,7 +23,7 @@ class App extends React.Component{
     loadTreeFromServer() {
         var self = this;
         $.ajax({
-          url: "http://localhost:8080/api"
+          url: "/api"
         }).then(function (data) {
           console.log(data);
           self.setState({factories: data.factories});
@@ -80,7 +80,7 @@ class App extends React.Component{
         var self = this;
             $.ajax({
             method: "POST",
-              url: "http://localhost:8080/api/create-factory",
+              url: "/api/create-factory",
               data: {name: name, rangeLow: rangeLow, rangeHigh: rangeHigh}
             }).then(function () {
               self.loadTreeFromServer();
@@ -92,7 +92,7 @@ class App extends React.Component{
         var self = this;
             $.ajax({
                 method: "POST",
-                  url: "http://localhost:8080/api/create-children",
+                  url: "/api/create-children",
                   data: {factoryId: factoryId, numberOfChildren: numberOfChildren}
                 }).then(function () {
                   self.loadTreeFromServer();
