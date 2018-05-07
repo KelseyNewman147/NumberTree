@@ -28,7 +28,6 @@
   "bugs": {
     "url": "https://github.com/KelseyNewman147/NumberTree/issues"
   },
-  "homepage": "https://github.com/KelseyNewman147/NumberTree#readme",
   "dependencies": {
     "es2015": "^0.0.0",
     "npm-watch": "^0.3.0",
