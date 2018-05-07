@@ -4,12 +4,16 @@ import com.kelsey.NumberTree.entities.ChildNode;
 import com.kelsey.NumberTree.entities.Factory;
 import com.kelsey.NumberTree.entities.RootNode;
 import com.kelsey.NumberTree.services.ChildNodeRepository;
+import com.kelsey.NumberTree.services.CorsFilter;
 import com.kelsey.NumberTree.services.FactoryRepository;
 import com.kelsey.NumberTree.services.RootNodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +28,26 @@ public class NumberTreeController {
     @Autowired
     ChildNodeRepository childNodes;
 
+    @Bean
+    CorsFilter corsFilter() {
+        CorsFilter filter = new CorsFilter();
+        return filter;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (rootNodeRepo.count() == 0) {
+            RootNode rootNode = new RootNode(1);
+            rootNodeRepo.save(rootNode);
+            Factory factory = new Factory(rootNode, "Tommy", 15, 55);
+            List<Factory> rootFactories = new ArrayList<>();
+            rootFactories.add(factory);
+            rootNode.setFactories(rootFactories);
+            factories.save(factory);
+
+        }
+    }
+
     //retrieve all existing factories and their children from root node
     @RequestMapping(path = "/api", method = RequestMethod.GET)
     public RootNode tree() {
@@ -33,13 +57,11 @@ public class NumberTreeController {
 
     //add new factory
     @RequestMapping(path = "/api/create-factory", method = RequestMethod.POST)
-    public void createFactory(String name, int rangeLow, int rangeHigh) {//ToDo: change to (@RequestBody Factory factory)?
+    public void createFactory(String name, int rangeLow, int rangeHigh) {
         RootNode rootNode = rootNodeRepo.findById(1);
         Factory factory = new Factory();
         factory.setRootNode(rootNode);
-        if ((rangeHigh > rangeLow)
-                //&& (name != null && !name.isEmpty())//ToDo: validate that inputs are not null in frontend
-        ) {
+        if ((rangeHigh > rangeLow)) {
             factory.setName(name);
             factory.setRangeLow(rangeLow);
             factory.setRangeHigh(rangeHigh);
@@ -54,7 +76,6 @@ public class NumberTreeController {
     //create new generation of children through user input
     @RequestMapping(path = "/api/create-children", method = RequestMethod.POST)
     public void createChildren(int factoryId, int numberOfChildren) {
-        //"FactoryId" needs to be filled by factory selected by user
         Factory factory = factories.findFactoryById(factoryId);
         int rangeHigh = factory.getRangeHigh();
         int rangeLow = factory.getRangeLow();
@@ -88,8 +109,7 @@ public class NumberTreeController {
     @RequestMapping(path = "/api/rename-factory/{id}", method = RequestMethod.POST)
     public void renameFactory(@PathVariable("id") int factoryId, String newName) {
         Factory factory = factories.findFactoryById(factoryId);
-        if (// newName != null && //ToDo: validate that inputs are not null in frontend
-                        !newName.isEmpty()) {
+        if (!newName.isEmpty()) {
         factory.setName(newName);
         factories.save(factory);
         } else {

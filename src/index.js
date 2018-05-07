@@ -18,12 +18,16 @@ class App extends React.Component{
         this.childFormSubmit = this.childFormSubmit.bind(this);
         this.addFactory = this.addFactory.bind(this);
         this.addChildren = this.addChildren.bind(this);
+        this.showDeleteForm = this.showDeleteForm.bind(this);
+        this.hideDeleteForm = this.hideDeleteForm.bind(this);
+        this.deleteFormSubmit = this.deleteFormSubmit.bind(this);
+        this.deleteFactory = this.deleteFactory.bind(this);
     }
 
     loadTreeFromServer() {
         var self = this;
         $.ajax({
-          url: "/api"
+          url: "http://localhost:8080/api"
         }).then(function (data) {
           console.log(data);
           self.setState({factories: data.factories});
@@ -33,6 +37,9 @@ class App extends React.Component{
 
     componentDidMount() {
         this.loadTreeFromServer();
+        this.hideChildForm();
+        this.hideFactoryForm();
+        this.hideDeleteForm();
     }
 
     componentWillReceiveProps(nextProps, nextState) {
@@ -57,6 +64,14 @@ class App extends React.Component{
         document.getElementById("addChildrenForm").style.display = "none";
     }
 
+    showDeleteForm() {
+        document.getElementById("deleteFactoryForm").style.display = '';
+    }
+
+    hideDeleteForm() {
+            document.getElementById("deleteFactoryForm").style.display = "none";
+    }
+
     factoryFormSubmit() {
         var form = document.getElementById("addFactoryForm");
         var name = form.elements["factory_name"].value;
@@ -68,19 +83,27 @@ class App extends React.Component{
     }
 
     childFormSubmit() {
-            var form = document.getElementById("addChildrenForm");
-            var factoryId = form.elements["factory_Id"].value;
-            var numberOfChildren = form.elements["number_of_children"].value;
-            this.hideChildForm();
-            document.getElementById("addChildrenForm").reset();
-            this.addChildren(factoryId, numberOfChildren);
-        }
+        var form = document.getElementById("addChildrenForm");
+        var factoryId = form.elements["factory_Id"].value;
+        var numberOfChildren = form.elements["number_of_children"].value;
+        this.hideChildForm();
+        document.getElementById("addChildrenForm").reset();
+        this.addChildren(factoryId, numberOfChildren);
+    }
+
+    deleteFormSubmit() {
+        var form = document.getElementById("deleteFactoryForm");
+        var factoryId = form.elements["factory_Id"].value;
+        this.hideFactoryForm();
+        document.getElementById("deleteFactoryForm").reset();
+        this.deleteFactory(factoryId);
+    }
 
     addFactory(name, rangeLow, rangeHigh) {
         var self = this;
             $.ajax({
             method: "POST",
-              url: "/api/create-factory",
+              url: "http://localhost:8080/api/create-factory",
               data: {name: name, rangeLow: rangeLow, rangeHigh: rangeHigh}
             }).then(function () {
               self.loadTreeFromServer();
@@ -92,7 +115,7 @@ class App extends React.Component{
         var self = this;
             $.ajax({
                 method: "POST",
-                  url: "/api/create-children",
+                  url: "http://localhost:8080/api/create-children",
                   data: {factoryId: factoryId, numberOfChildren: numberOfChildren}
                 }).then(function () {
                   self.loadTreeFromServer();
@@ -100,31 +123,44 @@ class App extends React.Component{
                 });
     }
 
+    deleteFactory(factoryId) {
+            var self = this;
+                $.ajax({
+                    method: "DELETE",
+                      url: "http://localhost:8080/api/delete-factory/" + factoryId,
+                    }).then(function () {
+                      self.loadTreeFromServer();
+                      console.log("Factory deleted.");
+                    });
+        }
+
     render() {
 
         return(
         <div>
             <div id="addFactory">
-                <span className="button"> <input type="button" value="Add Factory" onClick={this.showFactoryForm} /> </span>
-                <span className="button"> <input type="button" value="Add Children" onClick={this.showChildForm} /> </span>
+                <span> <input type="button" className="button" value="Add Factory" onClick={this.showFactoryForm} /> </span>
+                <span> <input type="button" className="button" value="Add Children" onClick={this.showChildForm} /> </span>
+                <span> <input type="button" className="button" value="Delete Factory" onClick={this.showDeleteForm} /> </span>
                 <form id="addFactoryForm">
-                    <h3>Add a new factory</h3>
                     <span>Name:  <input type="text" name="factory_name" id="factory_name" /></span>
                     <span>Range:
                                 <input type="number" name="range_low" id="range_low" />
                                 <input type="number" name="range_high" id="range_high" />
                             </span>
-
-                    <input type="button" className="button" value="Add" onClick={this.factoryFormSubmit} />
-                    <input type="reset" className="button" value="Cancel" onClick={this.hideFactoryForm} />
+                    <input type="button" value="Add" onClick={this.factoryFormSubmit} />
+                    <input type="reset" value="Cancel" onClick={this.hideFactoryForm} />
                 </form>
                 <form id="addChildrenForm">
-                    <h3>Add children to a factory</h3>
                     <span>Factory ID:  <input type="number" name="factory_Id" id="factory_Id" /></span>
                     <span>Number of Children: <input type="number" name="number_of_children" id="number_of_children" /></span>
-
-                     <input type="button" className="button" value="Generate Children" onClick={this.childFormSubmit} />
-                     <input type="reset" className="button" value="Cancel" onClick={this.hideChildForm} />
+                     <input type="button" value="Generate" onClick={this.childFormSubmit} />
+                     <input type="reset"  value="Cancel" onClick={this.hideChildForm} />
+                </form>
+                <form id="deleteFactoryForm">
+                    <span>Factory Id: <input type="number" name="factory_Id" id="factory_Id" /></span>
+                    <input type="button" value="Delete" onClick={this.deleteFormSubmit} />
+                    <input type="reset"  value="Cancel" onClick={this.hideDeleteForm} />
                 </form>
             </div>
             <FactoryList factories={this.state.factories}/>
@@ -139,7 +175,7 @@ class FactoryList extends React.Component {
             <Factory key={factory.id} factory={factory}/>
         );
         return(
-            <ul>
+            <ul className="tree">
                 <li>{factories}</li>
             </ul>
         )
@@ -155,12 +191,11 @@ class Factory extends React.Component {
             <p key={childNode.id} childnode={childNode}>{childNode.number}</p>
             );
         return(
-            <ul>
-                <li>{this.props.factory.id}</li>
-                <li>{this.props.factory.name}</li>
-                <li>{this.props.factory.rangeLow}</li>
-                <li>{this.props.factory.rangeHigh}</li>
-                <ul>
+            <ul className="factory">
+                <li>ID: {this.props.factory.id}</li>
+                <li>Name: {this.props.factory.name}</li>
+                <li>{this.props.factory.rangeLow} : {this.props.factory.rangeHigh}</li>
+                <ul className="children">
                     <li>{childNodes}</li>
                 </ul>
             </ul>
