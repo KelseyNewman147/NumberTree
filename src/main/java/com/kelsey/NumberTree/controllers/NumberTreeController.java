@@ -61,7 +61,7 @@ public class NumberTreeController {
         RootNode rootNode = rootNodeRepo.findById(1);
         Factory factory = new Factory();
         factory.setRootNode(rootNode);
-        if ((rangeHigh > rangeLow)) {
+        if ((rangeHigh > rangeLow) && !name.isEmpty()) {
             factory.setName(name);
             factory.setRangeLow(rangeLow);
             factory.setRangeHigh(rangeHigh);
@@ -110,8 +110,8 @@ public class NumberTreeController {
     public void renameFactory(@PathVariable("id") int factoryId, String newName) {
         Factory factory = factories.findFactoryById(factoryId);
         if (!newName.isEmpty()) {
-        factory.setName(newName);
-        factories.save(factory);
+            factory.setName(newName);
+            factories.save(factory);
         } else {
             throw new java.lang.RuntimeException("Name cannot be null.");
         }
@@ -122,7 +122,7 @@ public class NumberTreeController {
     //adjust factory's range
     @RequestMapping(path = "/api/adjust-range/{id}", method = RequestMethod.POST)
     public void adjustRange(@PathVariable("id") int factoryId, int newRangeHigh, int newRangeLow) {
-        if (newRangeHigh > newRangeLow) {
+        if (newRangeHigh > newRangeLow){
             Factory factory = factories.findFactoryById(factoryId);
             factory.setRangeHigh(newRangeHigh);
             factory.setRangeLow(newRangeLow);

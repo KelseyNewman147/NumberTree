@@ -1,8 +1,6 @@
 package com.kelsey.NumberTree.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.List;
 
