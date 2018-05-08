@@ -22,6 +22,14 @@ class App extends React.Component{
         this.hideDeleteForm = this.hideDeleteForm.bind(this);
         this.deleteFormSubmit = this.deleteFormSubmit.bind(this);
         this.deleteFactory = this.deleteFactory.bind(this);
+        this.changeFactoryName = this.changeFactoryName.bind(this);
+        this.showNameForm = this.showNameForm.bind(this);
+        this.hideNameForm = this.hideNameForm.bind(this);
+        this.nameFormSubmit = this.nameFormSubmit.bind(this);
+        this.changeFactoryRange = this.changeFactoryRange.bind(this);
+        this.hideRangeForm = this.hideRangeForm.bind(this);
+        this.showRangeForm = this.showRangeForm.bind(this);
+        this.rangeFormSubmit = this.rangeFormSubmit.bind(this);
     }
 
     loadTreeFromServer() {
@@ -40,6 +48,8 @@ class App extends React.Component{
         this.hideChildForm();
         this.hideFactoryForm();
         this.hideDeleteForm();
+        this.hideRangeForm();
+        this.hideNameForm();
     }
 
     componentWillReceiveProps(nextProps, nextState) {
@@ -72,6 +82,22 @@ class App extends React.Component{
             document.getElementById("deleteFactoryForm").style.display = "none";
     }
 
+    showNameForm() {
+        document.getElementById("changeNameForm").style.display = '';
+    }
+
+    hideNameForm() {
+            document.getElementById("changeNameForm").style.display = "none";
+    }
+
+    showRangeForm() {
+        document.getElementById("changeRangeForm").style.display = '';
+    }
+
+    hideRangeForm() {
+        document.getElementById("changeRangeForm").style.display = "none";
+    }
+
     factoryFormSubmit() {
         var form = document.getElementById("addFactoryForm");
         var name = form.elements["factory_name"].value;
@@ -94,9 +120,28 @@ class App extends React.Component{
     deleteFormSubmit() {
         var form = document.getElementById("deleteFactoryForm");
         var factoryId = form.elements["factory_Id"].value;
-        this.hideFactoryForm();
+        this.hideDeleteForm();
         document.getElementById("deleteFactoryForm").reset();
         this.deleteFactory(factoryId);
+    }
+
+    nameFormSubmit() {
+        var form = document.getElementById("changeNameForm");
+        var factoryId = form.elements["factory_Id"].value;
+        var name = form.elements["factory_name"].value;
+        this.hideNameForm();
+        document.getElementById("changeNameForm").reset();
+        this.changeFactoryName(factoryId, name);
+    }
+
+    rangeFormSubmit() {
+        var form = document.getElementById("changeRangeForm");
+        var factoryId = form.elements["factory_Id"].value;
+        var newRangeLow = form.elements["range_low"].value;
+        var newRangeHigh = form.elements["range_high"].value;
+        this.hideRangeForm();
+        document.getElementById("changeRangeForm").reset();
+        this.changeFactoryRange(factoryId, newRangeLow, newRangeHigh);
     }
 
     addFactory(name, rangeLow, rangeHigh) {
@@ -132,7 +177,31 @@ class App extends React.Component{
                       self.loadTreeFromServer();
                       console.log("Factory deleted.");
                     });
-        }
+    }
+
+    changeFactoryName(factoryId, name) {
+                var self = this;
+                    $.ajax({
+                        method: "POST",
+                          url: "/api/rename-factory/" + factoryId,
+                          data: {newName: name}
+                        }).then(function () {
+                          self.loadTreeFromServer();
+                          console.log("Factory name changed.");
+                        });
+    }
+
+    changeFactoryRange(factoryId, newRangeLow, newRangeHigh) {
+                var self = this;
+                    $.ajax({
+                        method: "POST",
+                          url: "/api/adjust-range/" + factoryId,
+                          data: {newRangeLow: newRangeLow, newRangeHigh: newRangeHigh}
+                        }).then(function () {
+                          self.loadTreeFromServer();
+                          console.log("Factory range changed.");
+                        });
+    }
 
     render() {
 
@@ -142,6 +211,8 @@ class App extends React.Component{
                 <span> <input type="button" className="button" value="Add Factory" onClick={this.showFactoryForm} /> </span>
                 <span> <input type="button" className="button" value="Add Children" onClick={this.showChildForm} /> </span>
                 <span> <input type="button" className="button" value="Delete Factory" onClick={this.showDeleteForm} /> </span>
+                <span> <input type="button" className="button" value="Change Factory Name" onClick={this.showNameForm} /> </span>
+                <span> <input type="button" className="button" value="Change Factory Range" onClick={this.showRangeForm} /> </span>
                 <form id="addFactoryForm">
                     <span>Name:  <input type="text" name="factory_name" id="factory_name" /></span>
                     <span>Range:
@@ -162,6 +233,20 @@ class App extends React.Component{
                     <input type="button" value="Delete" onClick={this.deleteFormSubmit} />
                     <input type="reset"  value="Cancel" onClick={this.hideDeleteForm} />
                 </form>
+                <form id="changeNameForm">
+                    <span>Factory ID:  <input type="number" name="factory_Id" id="factory_Id" /></span>
+                     <span>Name: <input type="text" name="factory_name" id="factory_name" /></span>
+                     <input type="button" value="Change" onClick={this.nameFormSubmit} />
+                     <input type="reset"  value="Cancel" onClick={this.hideNameForm} />
+                 </form>
+                <form id="changeRangeForm">
+                    <span>Factory ID:  <input type="number" name="factory_Id" id="factory_Id" /></span>
+                     <span>Range: <input type="number" name="range_low" id="range_low" />
+                                  <input type="number" name="range_high" id="range_high" />
+                     </span>
+                     <input type="button" value="Change" onClick={this.rangeFormSubmit} />
+                     <input type="reset"  value="Cancel" onClick={this.hideRangeForm} />
+                 </form>
             </div>
             <FactoryList factories={this.state.factories}/>
         </div>
