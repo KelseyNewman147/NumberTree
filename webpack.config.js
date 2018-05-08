@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/main/resources/static/index.js',
+    entry: './src/index.js',
     cache: true,
     output: {
         path: __dirname,
