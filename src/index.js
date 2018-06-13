@@ -1,6 +1,5 @@
 import $ from 'jquery';
-
-
+//const es2015 = require('es2015');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
